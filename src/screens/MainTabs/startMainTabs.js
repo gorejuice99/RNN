@@ -3,8 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const starTabs = () => {
   Promise.all([
-    Icon.getImageSource('md-map', 30),
-    Icon.getImageSource('ios-share-alt', 30)
+    Icon.getImageSource('md-locate', 30),
+    Icon.getImageSource('md-share-alt', 30)
   ]).then(sources => {
     console.log(sources);
     Navigation.setRoot({
