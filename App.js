@@ -23,7 +23,7 @@ export default class App extends Component {
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <TouchableOpacity>
-          <Icon name="ios-trash" size={30} color="green"/>
+          <Icon name="ios-trash" size={30} color="green" />
         </TouchableOpacity>
         <Button title="login" onPress={this.loginHandler} />
       </View>
