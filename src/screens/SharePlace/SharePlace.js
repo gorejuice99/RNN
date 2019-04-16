@@ -1,21 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text } from 'react-native';
-
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Image
+} from 'react-native';
 import { addPlace } from '../../store/actions';
-import PlaceInput from '../../components/PlaceInput/PlaceInput';
 import { Navigation } from 'react-native-navigation';
 
+import MainText from '../../components/UI/MainText/MainText';
+import HeadingText from '../../components/UI/HeadingText/HeadingText';
+
+import PlaceInput from '../../components/PlaceInput/PlaceInput';
+import PickImage from '../../components/PickImage/PickImage';
+import PickLocation from '../../components/PickLocation/PickLocation';
 class SharePlaceScreen extends Component {
+  state = {
+    placeName: ''
+  };
   constructor(props) {
     super(props);
     Navigation.events().bindComponent(this);
   }
 
   navigationButtonPressed({ buttonId }) {
-    console.log(buttonId);
+    console.log(this.props.componentId);
     // will be called when "buttonOne" is clicked
-    Navigation.mergeOptions('navigation.playground.SideDrawerScreen', {
+    Navigation.mergeOptions(this.props.componentId, {
       sideMenu: {
         visible: true,
         title: {
@@ -25,18 +39,44 @@ class SharePlaceScreen extends Component {
     });
   }
 
-  placeAddedHandler = placeName => {
-    this.props.onAddPlace(placeName);
+  placeAddedHandler = () => {
+    if (this.state.placeName.trim() !== '') {
+      this.props.onAddPlace(this.state.placeName);
+    }
+  };
+
+  placeNameChangedHandler = val => {
+    this.setState({
+      placeName: val
+    });
   };
 
   render() {
     return (
-      <View>
-        <PlaceInput onPlaceAdded={this.placeAddedHandler} />
-      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <MainText>
+            <HeadingText>Share a place with us!</HeadingText>
+          </MainText>
+          <PickImage />
+          <PickLocation />
+          <PlaceInput
+            placeName={this.state.placeName}
+            onChangeText={this.placeNameChangedHandler}
+          />
+          <Button title="Share the place!" onPress={this.placeAddedHandler} />
+        </View>
+      </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  }
+});
 
 const mapDispatchToProps = dispatch => {
   return {
