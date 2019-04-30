@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Button, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Button,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator
+} from 'react-native';
 import { addPlace } from '../../store/actions';
 import { Navigation } from 'react-native-navigation';
 
@@ -54,6 +60,7 @@ class SharePlaceScreen extends Component {
   }
 
   placeAddedHandler = () => {
+    console.log('clicked');
     this.props.onAddPlace(
       this.state.controls.placeName.value,
       this.state.controls.location.value,
@@ -106,6 +113,20 @@ class SharePlaceScreen extends Component {
   };
 
   render() {
+    let submitButton = (
+      <Button
+        disabled={
+          !this.state.controls.placeName.valid ||
+          !this.state.controls.location.valid ||
+          !this.state.controls.image.valid
+        }
+        title="Share the place!"
+        onPress={this.placeAddedHandler}
+      />
+    );
+    if (this.props.isLoading) {
+      submitButton = <ActivityIndicator />;
+    }
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -118,15 +139,7 @@ class SharePlaceScreen extends Component {
             placeData={this.state.controls.placeName}
             onChangeText={this.placeNameChangedHandler}
           />
-          <Button
-            disabled={
-              !this.state.controls.placeName.valid ||
-              !this.state.controls.location.valid ||
-              !this.state.controls.image.valid
-            }
-            title="Share the place!"
-            onPress={this.placeAddedHandler}
-          />
+          <View style={styles.button}>{submitButton}</View>
         </View>
       </ScrollView>
     );
@@ -137,9 +150,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center'
+  },
+  placeholder: {
+    borderWidth: 1,
+    borderColor: 'black',
+    backgroundColor: '#eee',
+    width: '80%',
+    height: 150
+  },
+  button: {
+    margin: 8
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%'
   }
 });
 
+const mapStateToProps = state => {
+  return {
+    isLoading: state.ui.isLoading
+  };
+};
 const mapDispatchToProps = dispatch => {
   return {
     onAddPlace: (placeName, location, image) =>
@@ -148,6 +180,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SharePlaceScreen);

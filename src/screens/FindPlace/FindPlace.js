@@ -9,6 +9,7 @@ import {
 import { connect } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
 
+import { getPlaces } from '../../store/actions';
 import PlaceList from '../../components/PlaceList/PlaceList';
 
 class FindPlaceScreen extends Component {
@@ -21,6 +22,10 @@ class FindPlaceScreen extends Component {
     removeAnimation: new Animated.Value(1),
     placesAnimation: new Animated.Value(0)
   };
+
+  componentDidMount() {
+    this.props.onLoadPlaces();
+  }
 
   placesSearchHandler = () => {
     Animated.timing(this.state.removeAnimation, {
@@ -126,10 +131,19 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoadPlaces: () => dispatch(getPlaces())
+  };
+};
+
 const mapStateToProps = state => {
   return {
     places: state.places.places
   };
 };
 
-export default connect(mapStateToProps)(FindPlaceScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FindPlaceScreen);
