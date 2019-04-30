@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ImageBackground, Dimensions } from 'react-native';
-import startMainTabs from './src/screens/MainTabs/startMainTabs';
+import {
+  StyleSheet,
+  View,
+  ImageBackground,
+  Dimensions,
+  ActivityIndicator
+} from 'react-native';
+
 import DefaultInput from './src/components/UI/DefaultInput/DefaultInput';
 import HeadingText from './src/components/UI/HeadingText/HeadingText';
 import MainText from './src/components/UI/MainText/MainText';
@@ -55,13 +61,12 @@ class App extends Component {
     });
   };
 
-  loginHandler = () => {
+  authHandler = () => {
     const authData = {
       email: this.state.controls.email.value,
       password: this.state.controls.password.value
     };
-    this.props.onLogin(authData);
-    startMainTabs();
+    this.props.onTryAuth(authData, this.state.authMode);
   };
 
   switchAuthModeHandler = () => {
@@ -123,6 +128,20 @@ class App extends Component {
   render() {
     let headingText = null;
     let confirmPasswordControl = null;
+    let submitButton = (
+      <ButtonWithBackground
+        disabled={
+          (!this.state.controls.confirmPassword.valid &&
+            this.state.authMode === 'signup') ||
+          !this.state.controls.password.valid ||
+          !this.state.controls.email.valid
+        }
+        onPress={this.authHandler}
+        color="#29aaf4"
+      >
+        Submit
+      </ButtonWithBackground>
+    );
 
     if (this.state.viewMode === 'portrait') {
       headingText = (
@@ -152,6 +171,10 @@ class App extends Component {
           />
         </View>
       );
+    }
+
+    if (this.props.isLoading) {
+      submitButton = <ActivityIndicator />;
     }
 
     return (
@@ -206,20 +229,7 @@ class App extends Component {
               {confirmPasswordControl}
             </View>
           </View>
-
-          <ButtonWithBackground
-            disabled={
-              (!this.state.controls.confirmPassword.valid &&
-                this.state.authMode === 'signup') ||
-              !this.state.controls.password.valid ||
-              !this.state.controls.email.valid
-            }
-            onPress={this.loginHandler}
-            color="#29aaf4"
-          >
-            Submit
-          </ButtonWithBackground>
-          {/* <Button title="Submit" onPress={this.loginHandler} /> */}
+          {submitButton}
         </View>
       </ImageBackground>
     );
@@ -259,13 +269,18 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = state => {
+  return {
+    isLoading: state.ui.isLoading
+  };
+};
 const mapDispatchToProps = dispatch => {
   return {
-    onLogin: authData => dispatch(tryAuth(authData))
+    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode))
   };
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App);
