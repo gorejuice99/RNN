@@ -14,7 +14,7 @@ import ButtonWithBackground from './src/components/UI/ButtonWithBackground/Butto
 import backgroundImage from './src/assets/background.jpg';
 import validate from './src/utility/validation';
 import { connect } from 'react-redux';
-import { tryAuth } from './src/store/actions';
+import { tryAuth, authAutoSignIn } from './src/store/actions';
 class App extends Component {
   state = {
     viewMode: Dimensions.get('window').height > 500 ? 'portrait' : 'landscape',
@@ -53,6 +53,10 @@ class App extends Component {
 
   componentWillUnmount() {
     Dimensions.removeEventListener('change', this.updateStyles);
+  }
+
+  componentDidMount() {
+    this.props.onAutoSignIn();
   }
 
   updateStyles = dims => {
@@ -276,7 +280,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode))
+    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
+    onAutoSignIn: () => dispatch(authAutoSignIn())
   };
 };
 
