@@ -3,7 +3,7 @@ import { uiStartLoading, uiStopLoading } from './index';
 import startMainTabs from '../../screens/MainTabs/startMainTabs';
 import { AsyncStorage } from 'react-native';
 
-const API_KEY = 'AIzaSyB6HhqLkUwUfIC7OMssZmMyd_dyMo0DLlw';
+const API_KEY = '';
 export const tryAuth = (authData, authMode) => {
   return dispatch => {
     dispatch(uiStartLoading());
