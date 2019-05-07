@@ -64,7 +64,7 @@ Navigation.registerComponent(
   () => SideDrawerScreen
 );
 
-export default () => Navigation.events().registerAppLaunchedListener(() => {
+Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({
     root: {
       component: {

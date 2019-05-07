@@ -17,13 +17,21 @@ class FindPlaceScreen extends Component {
     navBarButtonColor: 'orange'
   };
 
-  state = {
-    placesLoaded: false,
-    removeAnimation: new Animated.Value(1),
-    placesAnimation: new Animated.Value(0)
-  };
+  constructor(props) {
+    super(props);
+    Navigation.events().bindComponent(this);
+    this.state = {
+      placesLoaded: false,
+      removeAnimation: new Animated.Value(1),
+      placesAnimation: new Animated.Value(0)
+    };
+  }
 
   componentDidMount() {
+    this.props.onLoadPlaces();
+  }
+
+  componentDidAppear() {
     this.props.onLoadPlaces();
   }
 

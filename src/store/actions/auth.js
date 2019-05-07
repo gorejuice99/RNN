@@ -3,11 +3,12 @@ import { uiStartLoading, uiStopLoading } from './index';
 import startMainTabs from '../../screens/MainTabs/startMainTabs';
 import { AsyncStorage } from 'react-native';
 
-const API_KEY = '';
+const API_KEY = 'AIzaSyB6HhqLkUwUfIC7OMssZmMyd_dyMo0DLlw';
 export const tryAuth = (authData, authMode) => {
   return dispatch => {
     dispatch(uiStartLoading());
-
+    console.log(authData);
+    console.log(authMode);
     let url =
       'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' +
       API_KEY;
@@ -36,6 +37,7 @@ export const tryAuth = (authData, authMode) => {
       .then(res => res.json())
       .then(parsedRes => {
         dispatch(uiStopLoading());
+        console.log(parsedRes);
         if (!parsedRes.idToken) {
           alert('Authentication failed, please try again');
         } else {
@@ -163,11 +165,19 @@ export const authClearStorage = () => {
   return dispatch => {
     AsyncStorage.removeItem('ap:auth:token');
     AsyncStorage.removeItem('ap:auth:expiryDate');
+    AsyncStorage.removeItem('ap:auth:refreshToken');
   };
 };
 
 export const authLogout = () => {
   return dispatch => {
     dispatch(authClearStorage());
+    dispatch(authRemoveToken());
+  };
+};
+
+export const authRemoveToken = () => {
+  return {
+    type: AUTH_REMOVE_TOKEN
   };
 };
